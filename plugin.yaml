@@ -1,0 +1,21 @@
+schema: mcpg.dev/plugin/v1
+id: dev.mcpg.tool-gate-slack-approval
+name: Slack Tool-Gate Approval
+license: Apache-2.0
+description: |
+  Multi-vtable cdylib: a `tool_gate` that returns
+  `PendingApproval` for matching tools, an `approval_notifier`
+  that posts an interactive Slack message via chat.postMessage,
+  and an `http_route` that receives the Slack interactivity
+  callback (button click) and resolves the approval through the
+  gateway's `/webhooks/approvals/<id>` endpoint.
+
+  Operators configure rules (regex match on tool name) and Slack
+  credentials (bot token + signing secret) under
+  `plugins[*].config`. See README.md.
+class: tool_gate
+runtime: native-cdylib-v1
+protocol_version: "1.0"
+required_capabilities:
+  # Slack chat.postMessage + the gateway approval webhook callback.
+  - network_outbound
