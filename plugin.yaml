@@ -19,3 +19,5 @@ protocol_version: "1.0"
 required_capabilities:
   # Slack chat.postMessage + the gateway approval webhook callback.
   - network_outbound
+  # The `http_route` entity mounts the Slack interactivity callback path.
+  - http_route_serve
