@@ -1,6 +1,6 @@
 [package]
 name = "mcpg-plugin-tool-gate-slack-approval"
-version = "0.1.0-alpha.20"
+version = "0.1.0-alpha.21"
 license = "Apache-2.0"
 edition = "2024"
 description = "Slack-based tool-gate human approval — multi-vtable cdylib plugin"
@@ -9,9 +9,9 @@ description = "Slack-based tool-gate human approval — multi-vtable cdylib plug
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-mcpg-plugin-protocol = { git = "https://github.com/mcpg-dev/mcpg-plugin-protocol", tag = "v0.1.0-beta.17", version = "=0.1.0-beta.17" }
-mcpg-plugin-sdk = { git = "https://github.com/mcpg-dev/mcpg-plugin-sdk", tag = "v0.1.0-beta.17", version = "=0.1.0-beta.17" }
-mcpg-glob = { git = "https://github.com/mcpg-dev/mcpg-glob", tag = "v0.1.0-beta.17", version = "=0.1.0-beta.17" }
+mcpg-plugin-protocol = { git = "https://github.com/mcpg-dev/mcpg-plugin-protocol", tag = "v0.1.0-beta.18", version = "=0.1.0-beta.18" }
+mcpg-plugin-sdk = { git = "https://github.com/mcpg-dev/mcpg-plugin-sdk", tag = "v0.1.0-beta.18", version = "=0.1.0-beta.18" }
+mcpg-glob = { git = "https://github.com/mcpg-dev/mcpg-glob", tag = "v0.1.0-beta.18", version = "=0.1.0-beta.18" }
 anyhow = "1.0"
 base64 = "0.22"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
