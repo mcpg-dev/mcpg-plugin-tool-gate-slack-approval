@@ -43,7 +43,7 @@ plugins:
   - id: dev.mcpg.tool-gate-slack-approval
     class: tool_gate
     source:
-      oci: ghcr.io/mcpg-dev/source-code/plugins/tool-gate-slack-approval:protocol-1
+      oci: ghcr.io/mcpg-dev/plugins/tool-gate-slack-approval
     granted_capabilities:
       - network_outbound
     config:
