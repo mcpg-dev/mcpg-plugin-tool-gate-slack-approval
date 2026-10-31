@@ -767,21 +767,22 @@ struct SlackButtonValue {
 
 mod ffi {
     use super::*;
-    use mcpg_plugin_sdk::ffi::{boxed_drop, boxed_make, typed_handle};
+    use mcpg_plugin_sdk::ffi::{boxed_drop, boxed_make_with_host, typed_handle};
 
     // ------- tool_gate thunks -------
     // Every `make` slot takes `(host, config_json, inner_name)`.
-    // This cdylib doesn't consume `host` services or `inner_name`;
-    // the args are accepted and ignored so the FFI signature matches
-    // the `<Kind>VTable.make` shape.
+    // This cdylib calls no host service and ignores `inner_name`; the
+    // host handle still goes through `boxed_make_with_host`, which the
+    // SDK's log forwarding sends this plugin's `tracing` events through.
     pub extern "C" fn tg_make(
         host: ::mcpg_plugin_protocol::abi::HostHandleRef,
         cfg_json: RString,
         _inner_name: RString,
     ) -> RPluginHandle {
-        let _ = host;
+        // SAFETY: `host` is the live ref the host passed to this `make` slot.
+        let host = unsafe { mcpg_plugin_sdk::HostHandle::from_ffi(host) };
         catch_panic_to_null_handle(|| {
-            boxed_make::<SlackGate, _>(cfg_json.as_str(), |raw| {
+            boxed_make_with_host::<SlackGate, _>(cfg_json.as_str(), host, |raw, _host| {
                 let cfg = parse_config(raw).expect("parse config");
                 SlackGate::new(&cfg).expect("compile rules")
             })
@@ -832,9 +833,10 @@ mod ffi {
         cfg_json: RString,
         _inner_name: RString,
     ) -> RPluginHandle {
-        let _ = host;
+        // SAFETY: `host` is the live ref the host passed to this `make` slot.
+        let host = unsafe { mcpg_plugin_sdk::HostHandle::from_ffi(host) };
         catch_panic_to_null_handle(|| {
-            boxed_make::<SlackNotifier, _>(cfg_json.as_str(), |raw| {
+            boxed_make_with_host::<SlackNotifier, _>(cfg_json.as_str(), host, |raw, _host| {
                 let cfg = parse_config(raw).expect("parse config");
                 SlackNotifier::new(&cfg).expect("init notifier")
             })
@@ -873,9 +875,10 @@ mod ffi {
         cfg_json: RString,
         _inner_name: RString,
     ) -> RPluginHandle {
-        let _ = host;
+        // SAFETY: `host` is the live ref the host passed to this `make` slot.
+        let host = unsafe { mcpg_plugin_sdk::HostHandle::from_ffi(host) };
         catch_panic_to_null_handle(|| {
-            boxed_make::<SlackInteractive, _>(cfg_json.as_str(), |raw| {
+            boxed_make_with_host::<SlackInteractive, _>(cfg_json.as_str(), host, |raw, _host| {
                 let cfg = parse_config(raw).expect("parse config");
                 SlackInteractive::new(&cfg).expect("init http_route")
             })
@@ -955,6 +958,7 @@ mod ffi {
 #[unsafe(no_mangle)]
 pub extern "C" fn mcpg_plugin_register() -> PluginRegistration {
     use mcpg_plugin_protocol::abi::EntityRegistration;
+    mcpg_plugin_sdk::plugin_log::install();
     catch_panic_to_panicked_registration(|| PluginRegistration {
         abi_version: MCPG_PLUGIN_ABI_VERSION,
         plugin_id: RString::from(PLUGIN_ID),
