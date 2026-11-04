@@ -1,6 +1,6 @@
 [package]
 name = "mcpg-plugin-tool-gate-slack-approval"
-version = "0.1.0-rc.5"
+version = "0.1.0"
 license = "Apache-2.0"
 edition = "2024"
 description = "Slack-based tool-gate human approval — multi-vtable cdylib plugin"
